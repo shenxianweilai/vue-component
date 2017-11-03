@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>tree</title>
+	<link rel="stylesheet" href="http://at.alicdn.com/t/font_460643_vgbefmgecuxwp14i.css">
+	<script src="../vue.min.js"></script>
+	<style>
+		ul{
+			padding: 0;
+			margin: 0;
+			list-style: none;
+		}
+		.tree-menu{
+			width: 360px;
+			height: 100%;
+			padding: 0px 12px;
+			border-right: 1px solid #e6e9f0;
+		}
+		.tree-menu-comm span{
+			display: block;
+			font-size: 12px;
+			position: relative;
+			line-height: 22px;
+			padding: 2px 0;
+			padding-left: 5px;
+			color: #161719;
+			font-weight: normal;
+		}
+		.tree-nav {
+			background: #e7f2fe;
+			border: 1px solid #bfdaf4;
+			padding-left: 14px;
+			margin-left: 0px;
+		}
+		.tree-title {
+			border: 1px solid #fff;
+			margin-top: 1px;
+		}
+		/* 无箭头 */
+		.tree-contro-node .ico{
+			background-position: -999px -99px;
+		}
+		/* 箭头朝下 */
+		.tree-contro .ico{
+			background-position: 3px -92px;
+		}
+	</style>
+</head>
+<body>
+	<div id="app">
+		<m-tree :data="treeList"></m-tree>
+	</div>
+	<script>
+
+	/*
+		传入数据结构：
+		[{
+			title:xxx,
+			children:[
+			{
+				title:xxx,
+				children:[]
+			}]
+		}]
+
+		设置的props：
+		data数据结构默认为[]
+
+		定制模板：
+		不可定制
+
+		监控状态变化：
+		事件名on-select-change 点击数节点触发
+	*/
+	Vue.component('m-tree-list', {
+		computed:{
+			count(){
+				var c = this.increment;
+				return ++c;
+			} ,
+			stylePadding(){
+				return{
+					'padding-left':this.count*16 +'px'
+				}
+			}
+		},
+		props:{
+			data:{
+				type:Array,
+				default: []
+			},
+			increment:{
+				type:Number,
+				default:0
+			}
+		},
+		template:'\
+		<ul>\
+			<li v-for="item of data">\
+				<div class="tree-title" :style="[stylePadding]">\
+					<span><strong>{{item.title}}</strong><i class="iconfont icon-you"></i></span>\
+				</div>\
+				<!--如果循环的item有children属性，那么生成下一级-->\
+				<m-tree-list :increment="count" v-if="item.children" :data="item.children"></m-tree-list>\
+			</li>\
+		</ul>'
+	})
+
+	Vue.component('m-tree', {
+		props:{
+			data:{
+				type:Array,
+				default: []
+			}
+		},
+		template: '\
+		<div class="tree-menu-comm tree-menu">\
+			<m-tree-list :data="data"></m-tree-list>\
+		</div>'
+	});
+		var data = [{
+			title: "目录",
+			children: [{
+				title: "我的音乐",
+				children: [{
+					title: "周杰伦",
+					children:[{
+						title: "发如雪"
+					}]
+				},{
+					title: "刘德华",
+					children:[{
+						title: "谢谢你的爱"
+					}]
+				}]
+			},{
+				title: "我的照片"
+			}]
+		}];
+
+		new Vue({
+			el: "#app",
+			data:{
+				treeList:data
+			}
+		})
+			
+	</script>
+</body>
+</html>

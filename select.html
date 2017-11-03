@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>自定义下拉框</title>
+	<script src="./vue.min.js"></script>
+</head>
+<body>
+	<div id="app">
+		<h2>自定义下拉框</h2>
+		<custom-select btn-value="查询" :list="list1"></custom-select>
+		<custom-select btn-value="搜索" :list="list2"></custom-select>
+	</div>
+
+	<script>
+
+		//注册组件
+		Vue.component("custom-select", {
+			data:function(){
+				return {
+					selectShow:false,
+					val:''
+				};
+			},
+			props:["btnValue","list"],
+			template:'\
+			<section class="wrap">\
+				<div class="">\
+					<div>\
+						<input type="text" :value="val" class="keyWord" placeholder="你好" @click="selectShow=!selectShow">\
+						<input type="button" :value="btnValue">\
+						<span></span>\
+					</div>\
+					<custom-list v-show="selectShow" :list="list" @recieve="changeValueHandle"></custom-list>\
+				</div>\
+			</section>',
+			methods:{
+				changeValueHandle(value){
+					this.val = value;
+				}
+			}
+		});
+
+		Vue.component('custom-list', {
+			props:["list"],
+			template:'\
+			<ul>\
+				<li v-for="item of list" @click="selectValueHandle(item)">{{item}}</li>\
+			</ul>',
+			methods:{
+				selectValueHandle:function(item){
+					//子传父
+					this.$emit("recieve", item)
+				}
+			}
+		});
+
+		new Vue({
+			el:"#app",
+			data:{
+				list1:["北京","南京","上海"],
+				list2:["17-10-28","17-10-29","17-10-30"]
+			}
+		})
+	</script>
+</body>
+</html>

@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>alert</title>
+	<link rel="stylesheet" href="http://at.alicdn.com/t/font_460643_6riz540f9wq7u8fr.css">
+	<style>
+		.m-alert{
+			width: 100%;
+			padding: 8px 16px;
+			margin: 0;
+			box-sizing: border-box;
+			border-radius: 4px;
+			position: relative;
+			background-color: #fff;
+			overflow: hidden;
+			color: #fff;
+			display: table;
+			transition: opacity 0.2s;
+			margin-top: 10px;
+			border: 1px solid #ccc;
+		}
+		.m-content{
+			display: table-cell;
+			padding: 0 8px;
+		}
+		.m-message {
+			font-size: 13px;
+			line-height: 18px;
+		}
+		/* 不同状态样式 */
+		.m-alert-success{
+			background-color: #13ce66;
+		}
+		.m-alert-info{
+			background-color: #50bfff;
+		}
+		.m-alert-warning{
+			background-color: #f7ba2a;
+		}
+		.m-alert-error{
+			background-color: #ff4949;
+		}
+		/* 关闭按钮样式 */
+		.icon-guanbi{
+			font-size: 12px;
+			color: #fff;
+			opacity: 1;
+			top: 12px;
+			right: 15px;
+			position: absolute;
+			cursor: pointer;
+		}
+		 #app{
+		 	width: 500px;
+		 }
+	</style>
+	<script src="../vue.min.js"></script>
+</head>
+<body>
+	<div id="app">
+		<m-alert type="info" title="少年加油"></m-alert>
+		<m-alert type="warning" title="gtmdace">
+			<template slot="titleTmp">
+				<p>我是定制的提醒标签</p>
+			</template>
+			<i slot="iconTmp" class="iconfont icon-chuangkou"></i>
+		</m-alert>
+
+		<m-alert type="error" :show-icon="true"></m-alert>
+		<m-alert 
+		type="success" 
+		title="恭喜您成功了" 
+		:closeable="false" 
+		style="background-color: #4e4e4e;"
+		@close-click="close"
+		></m-alert>
+	</div>
+	<script>
+		/*
+			alert提醒框有四种状态： info success error warning
+
+			设置的props：
+			type 提醒框类型 默认info
+			title 提示信息 ‘这里有一个消息要提醒’
+			closeable 是否禁用关闭 默认true
+			showIcon 是否显示图标 默认为false
+			style 设置提醒框样式 默认{}
+
+			定制模板
+			slot为iconTmp 定制icon模板
+			slot为titleTmp 定制提示信息结构
+
+			监控状态变化
+			事件名close-click 点击关闭x触发
+		*/
+		const prefixCls = 'm-alert';
+		Vue.component('m-alert', {
+			props:{
+				type:{
+					type:String,
+					default:"info"
+				},
+				title:{
+					type:String,
+					default:'这里有一个消息要提示'
+				},
+				closeable:{
+					type:Boolean,
+					default:true
+				},
+				showIcon:{
+					type:Boolean,
+					default:false
+				},
+				style:String
+
+			},
+			computed:{
+				classes(){
+					var x = this.type;
+					return 'm-alert-' + x
+				},
+				iconType(){
+					let type="";
+					switch(this.type) {
+						case 'success':
+							type = 'icon-dui1';
+							break;
+						case 'info':
+							type = 'icon-i';
+							break;
+						case 'warning':
+							type = 'icon-tanhao';
+							break;
+						case 'error':
+							type = 'icon-cuowu';
+							break;
+					}
+					return type;
+				}
+			},
+			template:'\
+				<div class="m-alert" :class="[classes]" style="style">\
+					<slot name="iconTmp">\
+						<i v-if="showIcon" class="iconfont" :class="[iconType]"></i>\
+					</slot>\
+					<div class="m-content">\
+						<slot name="titleTmp">\
+							<span class="m-message">{{title}}</span>\
+						</slot>\
+						<i v-if=!closeable  class="iconfont icon-guanbi" @click="closeHandle"></i>\
+					</div>\
+				</div>',
+			methods:{
+			closeHandle(){
+				this.$emit("close-click")
+			}
+		},
+		});
+		
+		new Vue({
+			el:'#app',
+			methods:{
+				close(){
+					alert("关闭后做一些事情")
+				}
+			}
+		})
+	</script>
+</body>
+</html>

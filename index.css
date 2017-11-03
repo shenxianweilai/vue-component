@@ -1,0 +1,26 @@
+.task-input{
+	display: block;
+	width: 800px;
+}
+li{
+	list-style: none;
+}
+a{
+	text-decoration: none;
+	color: lightgreen
+}
+.completed{
+	text-decoration: line-through;
+}
+.todo-list li.editing .edit{
+	display: block;
+	width: 506px;
+	padding: 13px 17px 12px 17px;
+}
+.edit{
+	display: none;
+}
+.active
+{
+	border: 1px solid lightgreen
+}
